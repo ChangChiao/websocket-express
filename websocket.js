@@ -13,17 +13,36 @@ wss.on("connection", function connection(ws) {
     ws.send(JSON.stringify({ message: "ping" }));
     // }
   });
-  //   const pingInterval = setInterval(() => {
-  //     ws.send("ping");
-  //     // ws.ping();
-  //   }, 3000);
+  const pingInterval = setInterval(() => {
+    const temp = generateRandomData();
+    // ws.send("ping");
+    // ws.ping();
+    console.log("server-sent==", temp);
+    ws.send(JSON.stringify(temp));
+  }, 3000);
 
   ws.on("close", function close() {
-    // clearInterval(pingInterval);
+    clearInterval(pingInterval);
     console.log("disconnected");
+  });
+
+  ws.on("error", function close() {
+    clearInterval(pingInterval);
+    console.log("error");
   });
 
   //   ws.on("pong", () => {
   //     console.log("pong received");
   //   });
 });
+
+const generateRandomData = () => {
+  let data = [];
+  for (let i = 0; i < 100; i++) {
+    data.push({
+      dataValue: Math.random() * 100,
+      dateTime: new Date().toISOString() + Math.random() * 100,
+    });
+  }
+  return data;
+};
